@@ -1,0 +1,21 @@
+<body>
+<form id="post">
+    <label for="name">Name:</label><input id="name" type="text" name="name">
+    <label for="email">Email:</label><input id="email" type="text" name="email">
+    <input type="submit" value="Send">
+</form>
+
+<script>
+    post.onsubmit = function(){
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/user', true);
+
+        xhr.send(JSON.stringify({message: this.elements.message.value}));
+
+        this.elements.message.value = '';
+
+        return false;
+    }
+</script>
+</body>

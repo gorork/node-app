@@ -1,0 +1,25 @@
+{
+    "name": "app-w-user",
+    "version": "1.0.0",
+    "description": "",
+    "main": "config.js",
+    "directories": {
+        "test": "test"
+    },
+    "dependencies": {
+        "mongoose": "^3.8.0",
+        "querystring": "^0.2.0",
+        "request": "^2.45.0",
+        "should": "^4.0.4",
+        "supertest": "^0.14.0"
+    },
+    "devDependencies": {
+        "mocha": "^1.21.4"
+    },
+    "scripts": {
+        "test": "mocha",
+        "start": "node server.js"
+    },
+    "author": "",
+    "license": ""
+}
