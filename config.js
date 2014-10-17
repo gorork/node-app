@@ -1,4 +1,6 @@
 module.exports = {
     "port": 8080,
-    "mangoose": "db1"
+    "mongoose": {
+        "uri": "mongodb://localhost/users"
+    }
 };
