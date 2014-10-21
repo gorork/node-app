@@ -3,42 +3,76 @@ var url = require('url');
 
 var config = require('./config');
 var User = require('./db');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 function app(req, res) {
 
-   if (req.url === '/'){
-       res.writeHead(200, {'Content-Type': 'text/plain'});
-       res.end('Hello, World!');
+    if (req.url === '/') {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+        res.end('Hello, World!');
+    } else if (req.url === '/user' && req.method === 'POST') {
+        // TEST: curl -H "Content-Type: application/json" -d '{"name":"Root","email":"I@am.root"}' http://localhost:8080/user
 
-   } else if (req.url === '/user' && req.method === 'POST'){ // TEST: curl -H "Content-Type: application/json" -d '{"name":"Root","email":"I@am.root"}' http://localhost:8080/user
+        // @see formidable
+        var input = [];
+        req.on('data', function(data) {
+            // use Content-Length for bytesExpected (but may be more)
+            input.push(data);
 
-       req.on('data', function (data) {
+            // sum length, check > maxLength
 
-           var postData = JSON.parse(data);
-           console.log(postData);
+        });
 
-           var newUser = new User(postData);
-           newUser.speak();
+        req.on('end', function() {
+            input = Buffer.concat(input).toString('utf-8');
 
-           newUser.save(function(err){
-               if (err) return console.error(err);
-           })
-       });
+            try {
+                var postData = JSON.parse(input);
+            } catch (e) {
+                res.statusCode = 400;
+                res.end("Bad data");
+                return;
+            }
 
-   } else if (req.method === 'GET'){ // TEST: http://localhost:8080/user/5440dc89150805964d5d9999
-       res.writeHead(200, {'Content-Type': 'text/plain'});
+            var newUser = new User(postData);
+            newUser.speak();
 
-       var id = req.url.split("/")[2];
+            newUser.save(function(err) {
+                if (err) {
+                    throw err; // fixme: res.statusCode = 500
+                }
+                res.end("OK");
+            })
+        });
 
-       User.find({ _id: id }, function (err, results) {
-           if (err) return console.error(err);
 
-           console.log((results));
-           var thisUser = results[0];
+    } else if (req.method === 'GET' && req.url.match(/^\/user\//)) { // TEST: http://localhost:8080/user/5440dc89150805964d5d9999
+        //res.writeHead(200, {'Content-Type': 'text/plain'});
 
-           res.end('Yay! This user exists:\n\nName: ' + thisUser.name + '\nEmail: ' + thisUser.email);
-       });
-   }
+        var id = req.url.split("/")[2];
+
+        try {
+            id = new ObjectId(id);
+        } catch (e) {
+            res.end("Bad id");
+            return;
+        }
+
+        var promise = User.findById(id).exec();
+
+        promise.then(function(user) {
+            if (user) {
+                res.end('Yay! This user exists:\n\nName: ' + user.name + '\nEmail: ' + user.email);
+            } else {
+                res.end("not found");
+            }
+        });
+
+    } else {
+        res.end('404');
+    }
 }
 
 module.exports = app;
+

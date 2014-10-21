@@ -1,21 +1,21 @@
 var mongoose = require('mongoose');
-var config = require('./config');
 
 mongoose.connect('mongodb://localhost/test');
 
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+mongoose.set('debug', true);
+
+var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-    email   : {
-        type      : String,
-        required  : true
+    email:   {
+        type:     String,
+        required: true
     },
-    name    : String,
-    isAdmin : Boolean
+    name:    String,
+    isAdmin: Boolean
 });
 
-userSchema.methods.speak = function(){
+userSchema.methods.speak = function() {
     var greeting = this.name
         ? "I am " + this.name
         : "I don't have a name";
@@ -25,5 +25,3 @@ userSchema.methods.speak = function(){
 var User = mongoose.model('User', userSchema);
 
 module.exports = User;
-
-

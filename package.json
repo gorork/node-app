@@ -6,16 +6,13 @@
     "directories": {
         "test": "test"
     },
-    "dependencies": {
-        "mongoose": "^3.8.0"
-    },
-    "devDependencies": {
-        "": ""
-    },
     "scripts": {
         "test": "",
         "start": "node server.js"
     },
-    "author": "",
-    "license": ""
+    "author": "Nadi",
+    "license": "",
+    "dependencies": {
+        "mongoose": "^3.8.17"
+    }
 }

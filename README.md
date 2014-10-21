@@ -1,2 +1,2 @@
-node-app
+Node.js micro app
 ========
